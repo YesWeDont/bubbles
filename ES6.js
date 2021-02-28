@@ -55,4 +55,5 @@ const canvas=document.querySelector("canvas");
 canvas.style.height="100vh";
 canvas.style.width="100vw";
 const x=canvas.clientWidth;
-const y
+const y=canvas.clientHeight;
+const m=new Manager();
