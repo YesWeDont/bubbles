@@ -5,11 +5,27 @@
         <style>
             body{
                 margin:0;
+                overflow:hidden;
+            }
+            #fps{
+                z-index: 100;
+                position: absolute;
+                bottom:0;
+                left:0;
+                color: #15ff0086;
+                margin: 0;
+                font-size: 20pt;
+            }
+            canvas{
+                margin:0;
             }
         </style>
     </head>
     <body>
         <canvas id="canvas"></canvas>
-        <script src="script.js" id="main"></script>
+        <p id="fps" z-index=100>dkjfhdskfyh</p>
+        <script src="engine/bubble.js"></script>
+        <script src="engine/manager.js"></script>
+        <script src="script.js"></script>
     </body>
 </html>
