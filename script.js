@@ -1,6 +1,4 @@
 "use strict";
-
-
 const canvas=document.getElementById("canvas");
 canvas.height=innerHeight;
 canvas.width=innerWidth;
@@ -10,13 +8,10 @@ var curr=Date.now();
 const ctx=canvas.getContext("2d");
 let fps=60;
 const fpsElement=document.querySelector("#fps")
-
 const player=new Bubble([x/2,y/2],10,[0,0],"green");
 Bubble.prototype._playerRadius=player.r
-const manager=new Manager(player,canvas.getContext("2d"));
-//manager.spawn(5,5);
-//manager.bindKeys();
 
+const manager=new Manager(player,canvas.getContext("2d"));
 document.addEventListener("keydown",(e)=>{
     if(!isNaN(parseInt(e.key))){
         manager.difficulty=parseInt(e.key)
@@ -31,7 +26,7 @@ document.addEventListener("keydown",(e)=>{
             manager.bindKeys();
             manager.player.position=[e.pageX,e.pageY]
         }
-        showTextSequence(ctx,["Avoid Red Bubbles","Blue Bubbles shrink you; You get larger and larger over time","Purple Bubbles add more points","Click to start"]);
+        showTextSequence(ctx,["Use arrow keys/mouse to move     Click to continue","Avoid Red Bubbles","Blue Bubbles shrink you; You get larger and larger over time","Purple Bubbles add more points","You have invunerability for the first 2 seconds","Click to start"]);
     }
 })
 function showTextSequence(ctx,text){
@@ -51,6 +46,7 @@ function showTextSequence(ctx,text){
         ctx.fillText(text[i],x/2-400,y/2,800);
         i++;
     }
+    ctx.canvas.click();
 }
 setInterval(()=>{
     if(fps===Infinity) fps=1000

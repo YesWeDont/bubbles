@@ -13,7 +13,7 @@
 */
 function Bubble(coord,r,s,color,avoid,avoidDist){
     this.position=coord||[(Math.random()*x),(Math.random()*y)]
-    this.r=r||( Bubble.prototype._radius*0.2 + Bubble.prototype._radius*Math.random()*0.8 );
+    this.r=r||Math.max(( Bubble.prototype._radius*0.2 + Bubble.prototype._radius*Math.random()*0.8 ),5);
     this.s=s||[(Math.random()-0.5)*Bubble.prototype._speed,(Math.random()-0.5)*Bubble.prototype._speed];
     this.color=color||(Math.random()<0.1?"blue":(Math.random()<0.1?"purple":"red"));
     if(this.color==="green"){

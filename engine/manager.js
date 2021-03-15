@@ -42,7 +42,7 @@ Manager.prototype.add=function add(b){
  * @returns {void}
  */
 Manager.prototype.update=function update(){
-    if(this.score>100000){
+    if(this.score>30000){
         this.ctx.fillStyle="blue"
         this.ctx.fillRect(0,0,x,y)
         this.ctx.fillStyle="black";
