@@ -13,20 +13,12 @@
     this.finished=false;
     this.score=0;
     this.ctx.font = '60px Comic Sans MS';
-    this.fps=fps||60;
+    this.fps=60;
     this._dt=1/60;
     this._frame=0;
     this.difficulty=0;
-
-
-    ctx.fillStyle="purple";
-    ctx.fillRect(0,0,x,y)
-    ctx.fillStyle="blue"
-    ctx.arc(x/2,y/2,4,0,2*Math.PI)
-    ctx.fillStyle="yellow";
-    ctx.fillText(`Hit a number key to choose difficulty`,(x/2-600),(y/2-60),x);
-    console.log(`${x}*${y}`)
-    this.ctx.font="20px Comic Sans MS"
+    this.maxBubble=75
+    this.scoreboard=fps
 }
 /**
  * Adds bubble to list
@@ -43,6 +35,7 @@ Manager.prototype.add=function add(b){
  */
 Manager.prototype.update=function update(){
     if(this.score>30000){
+        this.scoreboard.hidden=true;
         this.ctx.fillStyle="blue"
         this.ctx.fillRect(0,0,x,y)
         this.ctx.fillStyle="black";
@@ -54,6 +47,7 @@ Manager.prototype.update=function update(){
         return;
     }
     if(this.finished){
+        this.scoreboard.hidden=true;
         this.ctx.fillStyle="red"
         this.ctx.fillRect(0,0,x,y)
         this.ctx.fillStyle="white";
@@ -74,9 +68,15 @@ Manager.prototype.update=function update(){
     this.ctx.strokeRect(0,0,x,y)
 
 
-    this.player.r*=1+0.0004*this.difficulty
-    Bubble.prototype._radius*=1+0.0001*this.difficulty
-    Bubble.prototype._speed*=1+0.00016*this.difficulty
+    this.player.r*=1.002
+    Bubble.prototype._radius*=1.0005
+    Bubble.prototype._speed*=1.0008
+    if(this.difficulty>0){
+        this.player.r*=1.001
+        if(this.difficulty>1&&(Math.random<0.4)){
+            this.maxBubble+=1
+        }
+    }
     this.player.update(this.ctx,this._dt)
     
     //console.log(`b4: ${this.player.position}`)
@@ -106,15 +106,11 @@ Manager.prototype.update=function update(){
         return true;
     })
     this.score++;
-
+    this.scoreboard.innerHTML=this.score;
     fpsElement.style.color=this.ctx.fillStyle;
 
     var self=this;
-    manager.spawn(100,100);
-    this.ctx.fillText(`Score:${this.score}`,0,40)
-    this.ctx.fillText(`Bubble Count:${this.bubbles.length}`,0,60);
-    
-
+    manager.spawn(100);
     curr=Date.now();
     requestAnimationFrame(()=>{self.update.bind(self)()});
 }
@@ -125,10 +121,10 @@ Manager.prototype.update=function update(){
  * @param {Number} amount - Amount of dots spawned
  * @returns {void}
  */
-Manager.prototype.spawn=function(spawndistance,amount){
+Manager.prototype.spawn=function(spawndistance){
     var spawndistance=spawndistance||20
     //console.log("before")
-    while(this.bubbles.length<amount){
+    while(this.bubbles.length<this.maxBubble){
         let temp=new Bubble(false,false,false,false,this.player,spawndistance);
         //console.log(temp);
         this.bubbles.push(temp)
