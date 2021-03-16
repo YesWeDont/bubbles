@@ -8,22 +8,56 @@
                 overflow:hidden;
             }
             #fps{
-                z-index: 100;
                 position: absolute;
                 bottom:0;
                 left:0;
                 color: #15ff0086;
                 margin: 0;
                 font-size: 20pt;
+                z-index:2;
+            }
+            #score{
+                position: absolute;
+                top:0;
+                font-size: 20pt;
             }
             canvas{
                 margin:0;
+                z-index: 1;
+            }
+            .fill{
+                z-index: 3;
+                position: fixed;
+                align-content: center;
+                top:0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                background-color: rgb(131, 131, 131);
+                text-align: center;
+                vertical-align: bottom;
+            }
+            .center{
+                position: relative;
+                top:50%;
+                display: inline-block;
+                margin: auto;
+            }
+            button{
+                color: white;
+                font-size: 20pt;
+                border-radius: 30px;
+                background-color: grey;
+            }
+            h1{
+                color: white;
             }
         </style>
     </head>
     <body>
         <canvas id="canvas"></canvas>
-        <p id="fps" z-index=100>dkjfhdskfyh</p>
+        <p id="score"></p>
+        <p id="fps">dkjfhdskfyh</p>
         <script src="engine/bubble.js"></script>
         <script src="engine/manager.js"></script>
         <script src="script.js"></script>

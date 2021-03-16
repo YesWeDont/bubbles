@@ -11,8 +11,10 @@ const fpsElement=document.querySelector("#fps")
 const player=new Bubble([x/2,y/2],10,[0,0],"green");
 Bubble.prototype._playerRadius=player.r
 
-const manager=new Manager(player,canvas.getContext("2d"));
-document.addEventListener("keydown",(e)=>{
+const manager=new Manager(player,canvas.getContext("2d"),document.getElementById("score"));
+//startup mgr
+//derep
+/*document.addEventListener("keydown",(e)=>{
     if(!isNaN(parseInt(e.key))){
         manager.difficulty=parseInt(e.key)
         if(manager.difficulty===0) manager.difficulty=1
@@ -28,27 +30,54 @@ document.addEventListener("keydown",(e)=>{
         }
         showTextSequence(ctx,["Use arrow keys/mouse to move     Click to continue","Avoid Red Bubbles","Blue Bubbles shrink you; You get larger and larger over time","Purple Bubbles add more points","You have invunerability for the first 2 seconds","Click to start"]);
     }
-})
-function showTextSequence(ctx,text){
+})*/
+let layoutDiv=document.createElement("div");
+layoutDiv.classList.add("fill")
+let center=document.createElement("div");
+center.classList.add("center")
+layoutDiv.appendChild(center)
+let title=document.createElement("h1")
+title.innerHTML="Select Difficulty"
+layoutDiv.appendChild(title)
+document.body.appendChild(layoutDiv)
+let temp =["Easy","Medium","Hard"];
+temp.forEach((value,i)=>{
+    let button=document.createElement("button");
+    button.innerHTML=value;
+    button.onclick=()=>{
+        manager.difficulty=i;
+        while(center.firstElementChild?.tagName==="BUTTON"){
+            center.removeChild(center.firstElementChild)
+        }
+        //layoutDiv.hidden=true;
+        let text=["Use arrow keys/mouse to move     Click to continue","Avoid Red Bubbles","Blue Bubbles shrink you; You get larger and larger over time","Purple Bubbles add more points","You have invunerability for the first 2 seconds","Click to start"];
+        showTextSequence(layoutDiv,text,{
+            backgroundColor:"grey",
+            color:"white"
+        },function divClickHandler(){
+            layoutDiv.hidden=true;
+            manager.bindKeys()
+            manager.update();
+        });
+    }
+    center.appendChild(button);
+});
+
+function showTextSequence(div,text,styleOptions,next){
     let i=0;
-    let original=ctx.canvas.onclick;
-    console.log(original)
-    ctx.canvas.onclick= ()=>{
+    div.style=styleOptions
+    div.onclick= ()=>{
         if(i===text.length){
             console.log("exit")
-            ctx.canvas.onclick=original
+            canvas.requestPointerLock();
+            next()
             return;
         }
-        console.log("init text "+text[i])
-        ctx.fillStyle="purple"
-        ctx.fillRect(0,0,x,y)
-        ctx.fillStyle="yellow"
-        ctx.fillText(text[i],x/2-400,y/2,800);
+        else div.innerHTML=`<h1>${text[i]}</h1>`
         i++;
     }
-    ctx.canvas.click();
 }
 setInterval(()=>{
     if(fps===Infinity) fps=1000
-    fpsElement.innerHTML=`FPS: ${fps}`
+    fpsElement.innerHTML=`FPS: ${fps}\nBubble Count:${manager.bubbles.length}`
 },500)
