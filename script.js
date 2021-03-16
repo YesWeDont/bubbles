@@ -49,12 +49,18 @@ temp.forEach((value,i)=>{
         while(center.firstElementChild?.tagName==="BUTTON"){
             center.removeChild(center.firstElementChild)
         }
+        let btn=document.createElement("button");
+        btn.innerHTML="Skip"
+        btn.style.position="absolute";
+        btn.style.bottom="5%"
+        btn.style.right="5%"
+        layoutDiv.appendChild(btn)
         //layoutDiv.hidden=true;
         let text=["Use arrow keys/mouse to move     Click to continue","Avoid Red Bubbles","Blue Bubbles shrink you; You get larger and larger over time","Purple Bubbles add more points","You have invunerability for the first 2 seconds","Click to start"];
         showTextSequence(layoutDiv,text,{
             backgroundColor:"grey",
             color:"white"
-        },function divClickHandler(){
+        },btn,function divClickHandler(){
             layoutDiv.hidden=true;
             manager.bindKeys()
             manager.update();
@@ -63,7 +69,7 @@ temp.forEach((value,i)=>{
     center.appendChild(button);
 });
 
-function showTextSequence(div,text,styleOptions,next){
+function showTextSequence(div,text,styleOptions,skip,next){
     let i=0;
     div.style=styleOptions
     div.onclick= ()=>{
@@ -74,7 +80,15 @@ function showTextSequence(div,text,styleOptions,next){
             return;
         }
         else div.innerHTML=`<h1>${text[i]}</h1>`
+        div.appendChild(skip)
         i++;
+    }
+    skip.onclick=()=>{
+        console.log("exit")
+        canvas.requestPointerLock();
+        next()
+        skip.onclick=null;
+        return;
     }
 }
 setInterval(()=>{
