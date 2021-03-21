@@ -17,6 +17,7 @@ class Manager{
         this.difficulty=0;
         this.maxBubble=75;
         this.scoreboard=fps;
+        this.paused=false;
     }
     /**
      * Adds bubble to list
@@ -32,6 +33,10 @@ class Manager{
      * @returns {void}
      */
     update(){
+        if(this.paused){
+            requestAnimationFrame(()=>{this.update()})
+            return;
+        }
         this.ctx.fillStyle="gray"
         this.ctx.fillRect(0,0,x,y)
         if(this.score>30000){
@@ -84,20 +89,25 @@ class Manager{
         if(this.player.position[1]<0) this.player.position[1]=y+this.player.position[1]
         //console.log(`after: ${this.player.position}`)
         this.bubbles=this.bubbles.filter(i=>{
-            if((i.position[0]<0)||(i.position[1]<0)) return false;
-            if((i.position[0]>x)||(i.position[1]>y)) return false;
+            if((i.position[0]<0)||(i.position[1]<0)){
+                //console.log("deconstruct");
+                return false;
+            }
+            if((i.position[0]>x)||(i.position[1]>y)){
+                //console.log("deconstruct");
+                return false;
+            }
             return true;
         })
         let effects=[1,1];
         this.bubbles=this.bubbles.filter((bubble)=>{
             if(player.collide(bubble)){
-                console.log("kaboom")
+                console.log(bubble.color)
+                this.player.r*=0.9
                 if((bubble.color==="red")&&parseInt(this.scoreboard.innerHTML)>50){
                     this.player.dead=true;
-                    console.log("dead")
                 }else{
                     effects=bubble.applyEffect(effects);
-                    console.log(effects)
                 }
                 return false;
             }
@@ -123,7 +133,7 @@ class Manager{
         var spawndistance=spawndistance||20
         //console.log("before")
         while(this.bubbles.length<this.maxBubble){
-            let temp=new EffectBubble(false,false,false,false,this.player,spawndistance);
+            let temp=new Bubble(false,false,false,false,this.player,spawndistance);
             //console.log(temp);
             this.bubbles.push(temp)
             //i++;

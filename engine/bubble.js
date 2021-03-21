@@ -1,5 +1,6 @@
 //By @YesWeDont, under the MIT licence
 //bubbles system
+
 class Bubble{
     /**
      * @constructor
@@ -15,25 +16,29 @@ class Bubble{
         this.position=coord||[(Math.random()*x),(Math.random()*y)]
         this.r=r||Math.max(( Bubble._radius*0.2 + Bubble._radius*Math.random()*0.8 ),5);
         this.s=s||[(Math.random()-0.5)*Bubble._speed,(Math.random()-0.5)*Bubble._speed];
-        this.color=color||(Math.random()<0.1?"blue":(Math.random()<0.1?"purple":"red"));
+        if(color) this.color="green";
+        else{
+            this.color=Bubble.RNGList.selectEntry()
+        }
         this.dead=false;
         if(color==="green"){
             this.s=[0,0]
         }
-        if(avoid instanceof Bubble){
-            while(this.distance(avoid)<avoidDist){
-                this.reposition();
-            }
+        if(avoid && (avoid instanceof Bubble)){
+            this.reposition(avoid,avoidDist)
         }
-        if(color==="blue"){
+        this.init();
+    }
+    init(){
+        if(this.color==="blue"){
             this.s[1]=0;
             if(this.s[0]>0){
                this.position[0]=0
             }else{
-                this.position[0]=x
+                this.position[0]=x;
             }
         }
-        if(color==="purple"){
+        if(this.color==="purple"){
             this.s[0]=0;
             if(this.s[1]>0){
                 this.position[1]=0
@@ -55,9 +60,10 @@ class Bubble{
     /**
      * Repositions bubble
      */
-    reposition(){
-        this.position=[(Math.random()*x),(Math.random()*y)];
-        console.log("repos")
+    reposition(avoid,avoidDist){
+        while(this.distance(avoid)<avoidDist){
+            this.position=[(Math.random()*x),(Math.random()*y)];
+        }
     }
     /**
      * Distance between centres of bubbles
@@ -68,53 +74,31 @@ class Bubble{
         //console.log(`This:${this.position}; that:${that.position}`)
         var xdist=this.position[0]-that.position[0],
         ydist=this.position[1]-that.position[1];
-    return Math.hypot(xdist,ydist)
+        return Math.hypot(xdist,ydist)
     }
     /**
-     * Update position and calls render()
+     * Update and Render
      * @param {CanvasRenderingContext2D} ctx - Context for rendering
      * @param {Number} speedMultiplier - SpeedMultiplier to accommadate for FPS change
      * @returns {void}
      */
     update(ctx,speedMultiplier){
-        if(this.color==="blue") speedMultiplier*=2
+        if(this.color==="black") speedMultiplier*=3
+        if(this.color==="white") speedMultiplier/=3
+        if(this.color==="") this.color=Bubble.RNGList.selectEntry()
+        //if(this.color==="green"&&this.s!==[0,0]) this.color="yellow"
         this.position[0]+=(this.s[0]*(speedMultiplier));
         this.position[1]+=(this.s[1]*(speedMultiplier));
-        this.render(ctx);
-    }
-    /**
-     * Render the bubble
-     * @param {CanvasRenderingContext2D} ctx - Context to render on
-     */
-    render(ctx){
         ctx.fillStyle=this.color;
         ctx.beginPath();
         ctx.arc(this.position[0],this.position[1],this.r,0,2*Math.PI,false);
         ctx.fill();
     }
-}
-
-
-class EffectBubble extends Bubble{
-    constructor(){
-        super(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4]||false,arguments[5]||0)
-        //0.3percent effect stuff
-        if(Math.random()<0.5){
-            if(!(this.color==="blue"||this.color==="purple")){
-                console.log(this.color)
-                let rng=Math.random();
-                if(rng<0.3){
-                    //30 percent of yellow
-                    this.color="yellow"
-                }else if(rng<0.7){
-                    //40 percent of black
-                    this.color="black"
-                }else{
-                    this.color="white"
-                }
-            }
-        }
-    }
+    /**
+     * 
+     * @param {Number[]} list list of effects 
+     * @returns {Number[]} new list of effects
+     */
     applyEffect(list){
         //list format: [speed,radius]
         let effects={
@@ -129,10 +113,24 @@ class EffectBubble extends Bubble{
             },
             blue:(effects)=>{
                 return [effects[0],effects[1]*0.6]
+            },
+            orange:(effects)=>{
+                Bubble._radius*=0.8;
+                Bubble._speed*=0.8;
+                return [effects[0]*0.8,effects[1]*0.8]
             }
         }
         if(!(this.color in effects)) return list
-        console.log(this.color)
         return effects[this.color](list);
     }
+    static RNGList=new RNGList("yellow")
 }
+Bubble.RNGList
+.addEntry("purple",0.05)
+.addEntry("orange",0.1)
+.addEntry("yellow",0.1)
+.addEntry("blue",0.15)
+.addEntry("white",0.15)
+.addEntry("black",0.2)
+.addEntry("red",0.25)
+console.log(Bubble.RNGList.sumChances())

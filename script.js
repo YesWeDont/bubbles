@@ -54,9 +54,11 @@ temp.forEach((value,i)=>{
         btn.style.position="absolute";
         btn.style.bottom="5%"
         btn.style.right="5%"
+        btn.style.fontSize="40pt";
+        btn.style.borderRadius="50px"
         layoutDiv.appendChild(btn)
         //layoutDiv.hidden=true;
-        let text=["Use arrow keys/mouse to move     Click to continue","Avoid Red Bubbles","Blue Bubbles shrink you; You get larger and larger over time","Purple Bubbles add more points","You have invunerability for the first 2 seconds","Click to start"];
+        let text=["Use arrow keys/mouse to move<br><br>Click to continue","Avoid Red Bubbles",`Below is a list of the effects ${table}`,"You have invunerability for the first 2 seconds","Click to start"];
         showTextSequence(layoutDiv,text,{
             backgroundColor:"grey",
             color:"white"
@@ -95,3 +97,15 @@ setInterval(()=>{
     if(fps===Infinity) fps=1000
     fpsElement.innerHTML=`FPS: ${fps}\nBubble Count:${manager.bubbles.length}`
 },500)
+document.body.addEventListener("keydown",(e)=>{
+    if(e.key==="Escape"){
+        if((manager.paused=!manager.paused)){
+            //if manager is paused
+            layoutDiv.hidden=false;
+            layoutDiv.innerHTML="<h1>GAME PAUSED<br> PRESS ESCAPE KEY TO CONTINUE</h1>"
+        }else{
+            layoutDiv.hidden=true;
+        }
+    }
+    console.log("keys")
+})
